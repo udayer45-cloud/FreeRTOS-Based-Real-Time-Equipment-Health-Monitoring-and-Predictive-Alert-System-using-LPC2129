@@ -1,4 +1,4 @@
-# 🏭 FreeRTOS Based Real-Time Equipment Health Monitoring and Predictive Alert System using LPC2129
+# ⚙️ FreeRTOS Based Real-Time Equipment Health Monitoring and Predictive Alert System using LPC2129
 
 **A FreeRTOS-based embedded monitoring node with predictive alerting on the Linux side**
 
@@ -67,7 +67,7 @@ flowchart LR
         W --> HWDOG[(Hardware Watchdog)]
     end
 
-    U -->|UART 9600 baud| SER[/dev/ttyUSB1]
+    U -->|UART 9600 baud| SER["/dev/ttyUSB1"]
     SER --> SRV[Linux Server]
     SRV --> CSV[(data_log.csv)]
     SRV --> PRED{Predictive<br/>Threshold Model}
