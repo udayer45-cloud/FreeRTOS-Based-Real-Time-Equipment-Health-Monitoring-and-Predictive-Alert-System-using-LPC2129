@@ -2,7 +2,7 @@
 
 **A FreeRTOS-based embedded monitoring node with predictive alerting on the Linux side**
 
-An ARM7 (LPC2129) board runs FreeRTOS to sense a machine's temperature, load, and
+An ARM7 (LPC2129) board runs FreeRTOS to sense equipment temperature, load, and
 ambient light in real time, then hands the data off to a Linux server that logs it,
 predicts threshold breaches before they happen, and raises email + live-dashboard
 alerts the moment a real fault occurs.
@@ -29,21 +29,38 @@ alerts the moment a real fault occurs.
 
 ## 🔎 What This Project Does
 
-Industrial machines fail expensively and often without warning. This project is a
-low-cost, two-tier monitoring node that watches a machine's **temperature**, **load**,
-and **ambient light**, and does two things most simple monitors don't:
+### The Problem
+Industrial equipment fails expensively and often without warning. By the time a
+temperature gauge or a load sensor crosses its "danger" line, the equipment is
+already failing — the alert arrives at the same moment as the damage. Most simple
+monitoring setups only tell you *after* the fact: a light turns red, a threshold
+is breached, and the reaction is now purely damage control.
 
-1. **Predicts problems before they happen** — not just "temperature is 85°C," but
-   "temperature is rising and will cross 80°C in the next 4 seconds," so someone can
-   act before the machine actually faults.
-2. **Keeps itself alive** — a hardware watchdog and per-task heartbeat monitor mean
-   that if any FreeRTOS task silently hangs, the microcontroller resets itself instead
-   of failing invisibly.
+### The Solution
+This project is a two-tier monitoring system that closes that gap. An **LPC2129
+ARM7 microcontroller running FreeRTOS** sits directly on the equipment, continuously
+sampling **temperature**, **load** (via a potentiometer), and **ambient light**
+(via an LDR) once every second. Every reading is timestamped using a real-time
+clock, shown locally on an LCD, and streamed over UART to a **Linux server**.
 
-The embedded side (**LPC2129 + FreeRTOS**) does the real-time sensing, local display,
-and adaptive alarm. It streams every reading over UART to a **Linux server**, which
-logs it, runs the predictive threshold model, emails an alert on a real fault, and
-serves a live status feed to a terminal dashboard client.
+That server is where the "predictive" part happens: instead of only reacting when
+a value crosses 80, it tracks the **rate of change** across the last 5 readings and
+extrapolates forward — so it can warn *"Temperature rising, will reach 80 in ~4
+seconds"* before the equipment actually gets there. On an actual fault, it goes
+further: it logs the event to CSV, emails an alert over SMTP/TLS, and pushes a
+live, color-coded status feed to any connected terminal client.
+
+The system is also built to not fail silently. A **hardware watchdog**, backed by
+per-task heartbeat counters on the embedded side, means that if any FreeRTOS task
+locks up, the MCU detects it and resets itself automatically — no manual
+intervention required to bring the monitor back online.
+
+### In short
+| Layer | What it does |
+|---|---|
+| **Embedded (LPC2129 + FreeRTOS)** | Real-time sensing, local LCD display, adaptive local alarm, self-healing via watchdog |
+| **Linux server** | Predictive threshold forecasting, CSV logging, SMTP email alerts, live TCP status feed |
+| **Linux client** | Color-coded live dashboard (green = normal, yellow = predicted warning, red = active alert) |
 
 ---
 
