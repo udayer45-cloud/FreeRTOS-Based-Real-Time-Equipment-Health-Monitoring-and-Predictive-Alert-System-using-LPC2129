@@ -249,5 +249,5 @@ gcc Linux/src/client.c -I Linux/include -o client
 ## 👤 Author
 
 **Chalampalem Uday Kiran**
-Embedded Systems Engineer — Bare-metal ARM7, FreeRTOS, CAN, automotive & industrial systems
-📧 udaykiranchalam@gmail.com · 💻 [github.com/udayer45-cloud](https://github.com/udayer45-cloud) · 🔗 [linkedin.com/in/udaykiran1807](https://linkedin.com/in/udaykiran1807)
+Embedded Systems Engineer — Embedded C, ARM7 (LPC2129), FreeRTOS, Linux, TCP/IP Socket Programming
+📧 udayer45@gmail.com · 💻 [github.com/udayer45-cloud](https://github.com/udayer45-cloud) · 🔗 [linkedin.com/in/udaykiran1807](https://linkedin.com/in/udaykiran1807)
